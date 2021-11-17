@@ -1,0 +1,14 @@
+{
+  "name": "mintpixel",
+  "version": "1.0.0",
+  "description": "A basic pixel art application completed for the MintBean Hackathon",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Andrea Cleland",
+  "license": "ISC",
+  "dependencies": {
+    "simple-color-picker": "^1.0.5"
+  }
+}

@@ -5,9 +5,32 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MintPixel</title>
+  <style type="text/css">
+    canvas { border: 1px solid black; }
+  </style>
 </head>
 <body>
   <h1>MintPixel</h1>
   <p>A simple paint application</p>
+  <div class="app">
+    <div class="toolbar">
+      <div class="select-tool">
+
+      </div>
+      <div class="pen-size">
+        <label for="pen-size">Pen Size</label>
+        <input type="range" name="pen-size" id="pen-size" min="1" max="10">
+      </div>
+      <div class="color">
+        <label for="color">Color</label>
+        <input type="color" name="color" id="color">
+      </div>
+      
+      <label for="alpha">alpha</label>
+      <input type="range" name="alpha">
+    </div>
+    <canvas id="canvas"></canvas>
+    <script src="paint.js"></script>
+</div>
 </body>
 </html>

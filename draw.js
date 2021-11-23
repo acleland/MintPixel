@@ -58,6 +58,11 @@ function drawRectangle(x1, y1, x2, y2) {
     ctx.stroke();
 }
 
+function drawCircle(x1, y1, x2, y2) {
+    ctx.arc(x1,y1, Math.sqrt((x2-x1)**2 + (y2-y1)**2), 0, 2*Math.PI);
+    ctx.stroke();
+}
+
 
 canvas.addEventListener('mousemove', function(e) {
     mouse.x = e.offsetX;
@@ -91,6 +96,7 @@ canvas.addEventListener('mousedown', function(e) {
             canvas.addEventListener('mousemove', rectTool, false);
             break;
         case 'circle':
+            canvas.addEventListener('mousemove', circleTool, false);
             break;
         case 'fill':
             break;
@@ -99,7 +105,6 @@ canvas.addEventListener('mousedown', function(e) {
         default:
             console.log('no tool selected');
             break;
-    
     }
     
     
@@ -156,5 +161,16 @@ const rectTool = function(event) {
 
     canvas.addEventListener('mouseup', function() {
         canvas.removeEventListener('mousemove', rectTool, false);
+    })
+}
+
+const circleTool = function(event) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+    ctx.putImageData(last(canvasStates),0,0);
+    drawCircle(mouse.px, mouse.py, mouse.x, mouse.y);
+
+    canvas.addEventListener('mouseup', function() {
+        canvas.removeEventListener('mousemove', circleTool, false);
     })
 }

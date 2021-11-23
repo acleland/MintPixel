@@ -9,6 +9,6 @@
   "author": "Andrea Cleland",
   "license": "ISC",
   "dependencies": {
-    "simple-color-picker": "^1.0.5"
+    "p5": "^1.4.0"
   }
 }

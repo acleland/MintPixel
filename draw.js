@@ -4,6 +4,7 @@ const ctx = canvas.getContext('2d');
 canvas.width = 500;
 canvas.height = 250;
 
+
 let canvasStates = []
 
 let mouse = {
@@ -32,20 +33,6 @@ function clearCanvas() {
     ctx.clearRect(0,0,canvas.width, canvas.height);
 }
 
-function addAlphaLayer() {
-    const layer = document.createElement('canvas'); 
-    const container = get('.canvas-container');
-    container.appendChild(layer);
-    console.dir(layer);
-    console.log(layer.style)
-    layer.style.border = "1px";
-    layer.style.backgroundColor = "green";
-    layer.style.opacity = 0.2;
-    layer.width = canvas.width;
-    layer.height = canvas.height;
-}
-
-addAlphaLayer();
 
 function drawLine(x1, y1, x2, y2) {
     ctx.moveTo(x1,y1);
@@ -98,9 +85,8 @@ canvas.addEventListener('mousedown', function(e) {
         case 'circle':
             canvas.addEventListener('mousemove', circleTool, false);
             break;
-        case 'fill':
-            break;
         case 'eraser':
+            canvas.addEventListener('mousemove', eraserTool, false);
             break;
         default:
             console.log('no tool selected');
@@ -138,7 +124,6 @@ const freeDraw = function(event) {
     ctx.stroke();
     canvas.addEventListener('mouseup', function() {
         canvas.removeEventListener('mousemove', freeDraw, false);
-        pen.down = false;
     })
 }
 
@@ -174,3 +159,105 @@ const circleTool = function(event) {
         canvas.removeEventListener('mousemove', circleTool, false);
     })
 }
+
+const eraserTool = function(event) {
+    ctx.strokeStyle = 'white'
+    ctx.lineTo(mouse.x,mouse.y);
+    ctx.stroke();
+    canvas.addEventListener('mouseup', function() {
+        canvas.removeEventListener('mousemove', freeDraw, false);
+    })
+
+    canvas.addEventListener('mouseup', function() {
+        canvas.removeEventListener('mousemove', eraserTool, false);
+    })
+}
+
+// const fillTool = function(event) {
+//     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+//     let startX = mouse.x;
+//     let startY = mouse.y;
+//     let startPos = (startY * canvas.width + startX) * 4;
+//     let currentColor = get('#color').value;
+//     //clicked color
+//     let startR = imageData.data[startPos];
+//     let startG = imageData.data[startPos + 1];
+//     let startB = imageData.data[startPos + 2];
+//     //exit if color is the same
+//     if (
+//         currentColor.r === startR &&
+//         currentColor.g === startG &&
+//         currentColor.b === startB
+//     ) {
+//         return;
+//     }
+//     //Start with click coords
+//     let pixelStack = [[startX, startY]];
+//     let newPos, x, y, pixelPos, reachLeft, reachRight;
+//     floodFill();
+//     function floodFill() {
+//         newPos = pixelStack.pop();
+//         x = newPos[0];
+//         y = newPos[1];
+//         //get current pixel position
+//         pixelPos = (y * canvas.width + x) * 4;
+//         // Go up as long as the color matches and are inside the canvas
+//         while (y >= 0 && matchStartColor(pixelPos)) {
+//             y--;
+//             pixelPos -= canvas.width * 4;
+//         }
+//         //Don't overextend
+//         pixelPos += canvas.width * 4;
+//         y++;
+//         reachLeft = false;
+//         reachRight = false;
+//         // Go down as long as the color matches and in inside the canvas
+//         while (y < canvas.height && matchStartColor(pixelPos)) {
+//             colorPixel(pixelPos);
+//             if (x > 0) {
+//                 if (matchStartColor(pixelPos - 4)) {
+//                 if (!reachLeft) {
+//                     //Add pixel to stack
+//                     pixelStack.push([x - 1, y]);
+//                     reachLeft = true;
+//                 }
+//                 } else if (reachLeft) {
+//                 reachLeft = false;
+//                 }
+//             }
+//             if (x < canvas.width - 1) {
+//                 if (matchStartColor(pixelPos + 4)) {
+//                 if (!reachRight) {
+//                     //Add pixel to stack
+//                     pixelStack.push([x + 1, y]);
+//                     reachRight = true;
+//                 }
+//                 } else if (reachRight) {
+//                 reachRight = false;
+//                 }
+//             }
+//             y++;
+//             pixelPos += canvas.width * 4;
+//         }
+//         //recursive until no more pixels to change
+//         if (pixelStack.length) {
+//             floodFill();
+//         }
+//     }
+//     //render floodFill result
+//     canvas.putImageData(imageData, 0, 0);
+//     //helpers
+//     function matchStartColor(pixelPos) {
+//         let r = imageData.data[pixelPos];
+//         let g = imageData.data[pixelPos + 1];
+//         let b = imageData.data[pixelPos + 2];
+//         return r === startR && g === startG && b === startB;
+//     }
+//     function colorPixel(pixelPos) {
+//         imageData.data[pixelPos] = currentColor.r;
+//         imageData.data[pixelPos + 1] = currentColor.g;
+//         imageData.data[pixelPos + 2] = currentColor.b;
+//         imageData.data[pixelPos + 3] = 255;
+//     }
+//     }
+    

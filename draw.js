@@ -1,9 +1,6 @@
 const canvas = document.querySelector("#canvas");
 const ctx = canvas.getContext('2d');
 
-
-
-
 canvas.width = 500;
 canvas.height = 250;
 
@@ -15,12 +12,12 @@ let mouse = {
     hist: []
 }
 
-
 let pen = {
     down: false,
     size: 1
-
 }
+
+
 
 // Helper functions
 function get(el) {
@@ -35,13 +32,31 @@ function clearCanvas() {
     ctx.clearRect(0,0,canvas.width, canvas.height);
 }
 
+function addAlphaLayer() {
+    const layer = document.createElement('canvas'); 
+    const container = get('.canvas-container');
+    container.appendChild(layer);
+    console.dir(layer);
+    console.log(layer.style)
+    layer.style.border = "1px";
+    layer.style.backgroundColor = "green";
+    layer.style.opacity = 0.2;
+    layer.width = canvas.width;
+    layer.height = canvas.height;
+}
+
+addAlphaLayer();
+
 function drawLine(x1, y1, x2, y2) {
     ctx.moveTo(x1,y1);
     ctx.lineTo(x2,y2);
     ctx.stroke();
 }
 
-
+function drawRectangle(x1, y1, x2, y2) {
+    ctx.rect(x1,y1,x2-x1,y2-y1);
+    ctx.stroke();
+}
 
 
 canvas.addEventListener('mousemove', function(e) {
@@ -55,41 +70,31 @@ let counter = 0;
 canvas.addEventListener('mousedown', function(e) {
     let tool = get('#select-tool').value;
     const currentState = ctx.getImageData(0,0,canvas.width,canvas.height)
-    canvasStates.push(currentState)
-    counter += 1
-    console.log('mouse down event', counter);
+    canvasStates.push(currentState);
+    ctx.beginPath();
+    pen.size = parseInt(document.querySelector('#line-width').value);
+    let color = document.querySelector('#color').value;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = pen.size;
+    ctx.lineCap = 'round';
+    mouse.px = mouse.x
+    mouse.py = mouse.y
 
     switch (tool) {
         case 'pen':
-            console.log(tool);
-            ctx.beginPath();
-            pen.down= true;
-            pen.size = parseInt(document.querySelector('#line-width').value);
-            let color = document.querySelector('#color').value;
-            ctx.strokeStyle = color;
-            ctx.lineWidth = pen.size;
-            ctx.lineCap = 'round';
-            ctx.currentState = currentState;
             canvas.addEventListener('mousemove', freeDraw, false);
             break;
         case 'line':
-            console.log(tool);
-            ctx.save();
-            mouse.px = mouse.x
-            mouse.py = mouse.y
             canvas.addEventListener('mousemove', lineTool, false);
             break;
         case 'rectangle':
-            console.log(tool);
+            canvas.addEventListener('mousemove', rectTool, false);
             break;
         case 'circle':
-            console.log(tool);
             break;
         case 'fill':
-            console.log(tool);
             break;
         case 'eraser':
-            console.log(tool);
             break;
         default:
             console.log('no tool selected');
@@ -134,7 +139,8 @@ const freeDraw = function(event) {
 
 const lineTool = function(event) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.putImageData(ctx.currentState,0,0);
+    ctx.beginPath();
+    ctx.putImageData(last(canvasStates),0,0);
     drawLine(mouse.px, mouse.py, mouse.x, mouse.y);
 
     canvas.addEventListener('mouseup', function() {
@@ -142,10 +148,13 @@ const lineTool = function(event) {
     })
 }
 
-drawLine(10,20,40,60);
-canvasStates.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
-//ctx.clearRect(0,0,canvas.width,canvas.height);
-ctx.putImageData(last(canvasStates), 50,0);
+const rectTool = function(event) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+    ctx.putImageData(last(canvasStates),0,0);
+    drawRectangle(mouse.px, mouse.py, mouse.x, mouse.y);
 
-
-
+    canvas.addEventListener('mouseup', function() {
+        canvas.removeEventListener('mousemove', rectTool, false);
+    })
+}

@@ -1,0 +1,34 @@
+* {
+    font-family: 'Open Sans', sans-serif;
+}
+
+.title {
+    font-family: 'Righteous', cursive;
+    font-size: 50px;
+    margin: 0px;
+}
+
+
+body {
+    background-color: #4ABDAC;
+}
+
+.app {
+    /* text-align: center; */
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}
+
+.toolbar {
+    display: flex;
+    flex-direction: column;
+
+}
+
+canvas { 
+    border: 6px black;
+    padding: 1px;
+    background-color: white;
+    margin: 6px;
+}
